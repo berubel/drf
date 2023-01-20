@@ -11,10 +11,11 @@ from products.serializers import ProductSerializer
 
 # Create your views here.
 
-@api_view(["GET"])
+@api_view(["POST"])
 def api_home(request, *args, **kwargs):
-    instance =  Product.objects.all().order_by("?").first()
-    data = {}
-    if instance:
-       data = ProductSerializer(instance).data
-    return Response(data)
+    serializer = ProductSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        instance = serializer.save()
+        print(instance)
+        return Response(serializer.data)
+    return Response({'invalid':'Not good data'}, status=400)
