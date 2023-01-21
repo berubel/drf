@@ -3,9 +3,9 @@ import requests
 endpoint = "http://127.0.0.1:8000/api/products/"
 
 data = {
-    "title": "Snacks",
-    "content":"Popcorn", 
-    "price": 4.50
+    "title": "Banana",
+    "content":"Fruit", 
+    "price": 2.70
 }
 
 get_response = requests.post(endpoint, json=data)
