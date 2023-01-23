@@ -13,7 +13,7 @@ from .serializers import ProductSerializer
 # Create your views here.
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.DjangoModelPermissions]
     authentication_classes = [authentication.SessionAuthentication]
 
     queryset = Product.objects.all()
@@ -28,11 +28,17 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(content=content)
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
+    authentication_classes = [authentication.SessionAuthentication]
+    
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
 class ProductUpdateAPIView(generics.UpdateAPIView):
+    permission_classes = [permissions.DjangoModelPermissions]
+    authentication_classes = [authentication.SessionAuthentication]
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
