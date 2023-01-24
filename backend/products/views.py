@@ -8,12 +8,12 @@ from django.shortcuts import get_object_or_404
 
 from .models import Product
 from .serializers import ProductSerializer
-
+from .permissions import isStaffEditorPermission
 
 # Create your views here.
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [isStaffEditorPermission]
     authentication_classes = [authentication.SessionAuthentication]
 
     queryset = Product.objects.all()
@@ -30,7 +30,7 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
 class ProductDetailAPIView(generics.RetrieveAPIView):
     permission_classes = [permissions.DjangoModelPermissions]
     authentication_classes = [authentication.SessionAuthentication]
-    
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
