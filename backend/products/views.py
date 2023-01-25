@@ -1,4 +1,4 @@
-from rest_framework import generics, mixins, permissions, authentication
+from rest_framework import generics, mixins, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -7,15 +7,14 @@ from django.shortcuts import get_object_or_404
 
 from .models import Product
 from .serializers import ProductSerializer
-from .permissions import isStaffEditorPermission
-
-from api.authentication import TokenAuthentication
+from api.permissions import isStaffEditorPermission
+from api.mixins import StaffEditorPermissionMixin
 
 # Create your views here.
 
-class ProductListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
-
+class ProductListCreateAPIView(
+    StaffEditorPermissionMixin, 
+    generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
@@ -27,14 +26,18 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
             content = title
         serializer.save(content=content)
 
-class ProductDetailAPIView(generics.RetrieveAPIView):
+class ProductDetailAPIView(
+    StaffEditorPermissionMixin,
+    generics.RetrieveAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
-class ProductUpdateAPIView(generics.UpdateAPIView):
+class ProductUpdateAPIView(
+    StaffEditorPermissionMixin,
+    generics.UpdateAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     queryset = Product.objects.all()
@@ -46,9 +49,11 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
         if not instance.content:
             instance.content = instance.title
 
-class ProductDeleteAPIView(generics.DestroyAPIView):
+class ProductDeleteAPIView(
+    StaffEditorPermissionMixin,
+    generics.DestroyAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
-    
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
