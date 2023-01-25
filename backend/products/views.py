@@ -14,8 +14,7 @@ from api.authentication import TokenAuthentication
 # Create your views here.
 
 class ProductListCreateAPIView(generics.ListCreateAPIView):
-    permission_classes = [isStaffEditorPermission]
-    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -29,16 +28,14 @@ class ProductListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(content=content)
 
 class ProductDetailAPIView(generics.RetrieveAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
-    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     # lookup_field = 'pk'
 
 class ProductUpdateAPIView(generics.UpdateAPIView):
-    permission_classes = [permissions.DjangoModelPermissions]
-    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
@@ -50,6 +47,8 @@ class ProductUpdateAPIView(generics.UpdateAPIView):
             instance.content = instance.title
 
 class ProductDeleteAPIView(generics.DestroyAPIView):
+    permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
+    
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     lookup_field = 'pk'
