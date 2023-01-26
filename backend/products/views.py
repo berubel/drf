@@ -8,25 +8,41 @@ from django.shortcuts import get_object_or_404
 from .models import Product
 from .serializers import ProductSerializer
 from api.permissions import isStaffEditorPermission
-from api.mixins import StaffEditorPermissionMixin
+from api.mixins import StaffEditorPermissionMixin, UserQuerySetMixin
 
 # Create your views here.
 
 class ProductListCreateAPIView(
-    StaffEditorPermissionMixin, 
+    StaffEditorPermissionMixin,
+    UserQuerySetMixin,
     generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-    def perform_create(self, serializer):
+    user_field = 'user'
+    # allow_staff_view = False
+
+    def perform_create(self, request, serializer):
         title = serializer.validated_data.get('title')
         content = serializer.validated_data.get('content') or None
         if content is None:
             content = title
-        serializer.save(content=content)
+        serializer.save(user=request.user, content=content)
+
+    # def get_queryset(self, *args, **kwargs):
+    #     qs = super().get_queryset(*args, **kwargs)
+    #     request = self.request
+    #     user = request.user
+    #     if not user.is_authenticated:
+    #         return Product.objects.none()
+    #     return qs.filter(user=request.user)
+         
+       
+
 
 class ProductDetailAPIView(
     StaffEditorPermissionMixin,
+    UserQuerySetMixin,
     generics.RetrieveAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
@@ -36,6 +52,7 @@ class ProductDetailAPIView(
 
 class ProductUpdateAPIView(
     StaffEditorPermissionMixin,
+    UserQuerySetMixin,
     generics.UpdateAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
@@ -50,6 +67,7 @@ class ProductUpdateAPIView(
 
 class ProductDeleteAPIView(
     StaffEditorPermissionMixin,
+    UserQuerySetMixin,
     generics.DestroyAPIView):
     permission_classes = [permissions.IsAdminUser, isStaffEditorPermission]
 
