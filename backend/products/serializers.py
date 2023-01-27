@@ -15,9 +15,9 @@ class ProductInlineSerializer(serializers.Serializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     owner = UserPublicSerializer(source='user', read_only=True)
-    related_products = ProductInlineSerializer(source='user.product_set.all', read_only= True, many=True )
-    my_user_data = serializers.SerializerMethodField(read_only=True)
-    my_discount = serializers.SerializerMethodField(read_only=True)
+    # related_products = ProductInlineSerializer(source='user.product_set.all', read_only= True, many=True )
+    # my_user_data = serializers.SerializerMethodField(read_only=True)
+    # my_discount = serializers.SerializerMethodField(read_only=True)
     edit_url = serializers.SerializerMethodField(read_only=True)
     url = serializers.HyperlinkedIdentityField(view_name='product-detail', lookup_field='pk')
     # email = serializers.EmailField(write_only=True)
@@ -28,7 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'owner',
-            'related_products',
+            # 'related_products',
             'url',
             'edit_url',
             # 'email',
@@ -38,8 +38,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'content',
             'price',
             'sale_price',
-            'my_discount',
-            'my_user_data'
+            # 'my_discount',
+            # 'my_user_data'
         ]
     
     # def validate_title(self, value):
@@ -72,14 +72,14 @@ class ProductSerializer(serializers.ModelSerializer):
         return reverse("product-detail", kwargs={'pk': obj.pk}, request=request)
         # return f'/api/products/{obj.pk}'
 
-    def get_my_discount(self, obj):
-        if not hasattr(obj, 'id'):
-            return None
-        if not isinstance(obj, Product):
-            return None
-        return obj.get_discount()
+    # def get_my_discount(self, obj):
+    #     if not hasattr(obj, 'id'):
+    #         return None
+    #     if not isinstance(obj, Product):
+    #         return None
+    #     return obj.get_discount()
     
-    def get_my_user_data(self, obj):
-        return {
-            'username': obj.user.username
-        }
+    # def get_my_user_data(self, obj):
+    #     return {
+    #         'username': obj.user.username
+    #     }
